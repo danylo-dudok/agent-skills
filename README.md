@@ -34,4 +34,4 @@ Add `skills/<name>/SKILL.md` (plus a `README.md`), then add a row to the table a
 
 ## License
 
-No license yet — add one if you want others to reuse these skills.
+[MIT](LICENSE) © Danylo Dudok

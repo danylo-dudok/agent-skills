@@ -15,7 +15,6 @@ A Claude Code skill that turns a one-line feature request into an autonomous, **
 
 - **[Claude Code](https://claude.com/claude-code)** — loopsmith is a Claude Code skill.
 - **`/goal`** (Claude Code ≥ 2.1.139) — required to launch the autonomous loop. Without it, loopsmith prints the assembled prompt for you to run manually.
-- **`/senior-architect`** *(optional)* — pulled in for an architecture check when a feature adds dependencies, storage, or new modules. Safely skipped if not installed.
 
 ## Installation
 
@@ -65,4 +64,4 @@ If the path is unset or not found, the KB step is skipped — loopsmith works fi
 
 ## License
 
-No license yet. Add one (e.g. [MIT](https://choosealicense.com/licenses/mit/)) if you want others to reuse and contribute.
+[MIT](../../LICENSE) © Danylo Dudok
