@@ -156,11 +156,14 @@ Omit skills that are clearly irrelevant to this feature.]
   /etc/, system paths, or sibling project directories.
 - On completion: leave all changes as UNCOMMITTED, UNSTAGED working tree edits.
   Do NOT stage or commit anything — the user reviews and commits manually.
-  Write a completion walkthrough in this exact format — one line per file, nothing else:
+  Write a **visual recap** in this format:
+
+  A Mermaid diagram (in a ```mermaid fence) fitting the change — `flowchart` for a flow/pipeline, `erDiagram` for schema/data-model changes, otherwise a file-change map (changed files as nodes labelled added/modified/removed). ~12 nodes max; derive it from the real diff, never invent nodes.
 
   ## Changes
   `path/to/file` — what changed (one sentence) — why (one sentence)
-  `path/to/other` — what changed (one sentence) — why (one sentence)
+
+  Verification: <verify command> → <green/red, plus the key success line>.
 
 ### User constraints
 - Do NOT modify: [answer to Q7, or "nothing specified — use judgment"]
@@ -174,6 +177,7 @@ Omit skills that are clearly irrelevant to this feature.]
 - Shortest working diff. No unrequested abstractions (no interface with one implementation, no config for a constant, no scaffolding "for later"). Delete over add; boring over clever.
 - Mark deliberate simplifications with a `ponytail:` comment naming the ceiling and upgrade path, e.g. `# ponytail: O(n^2) scan, index it if the list grows`.
 - Never simplify away: input validation at trust boundaries, error handling that prevents data loss, security, accessibility basics, or anything the user explicitly asked for. The harness from Phase 3.5 is the "one runnable check" — keep it.
+- Stay in one job. If you notice an unrelated bug, cleanup, or improvement, do NOT fix it — that widens scope and blast radius. Note it in your final response, separately from the `## Changes` walkthrough, so the user can triage it later.
 
 ## On each iteration
 1. Before writing any code on the FIRST iteration only: check the answer to Q3
@@ -184,7 +188,7 @@ Omit skills that are clearly irrelevant to this feature.]
    iterations.
 2. Run the verify command (or perform the behavioral check).
 3. Read the full output carefully.
-4. If ALL done-when conditions are met → write the completion walkthrough (format defined in Hard limits "On completion"), then stop.
+4. If ALL done-when conditions are met → before declaring done (skip only for a trivial one-line change), get an INDEPENDENT review of your diff (`git diff`): use an installed review skill if one is available, else spawn a fresh subagent — never the agent that wrote the code. It checks the diff against the done-when criteria, the Constraints, scope creep, and obvious correctness/security issues. Fix any blocking findings, re-run the verify command, and stop only when it is green AND the review reports nothing blocking. Then write the completion walkthrough (format defined in Hard limits "On completion").
 5. If failing → identify the root cause from the output, fix it minimally, go to step 2.
 6. Never modify files listed under "Do NOT modify".
 7. Before writing new code for a domain covered by a listed skill, invoke that skill first.
@@ -202,9 +206,11 @@ Count the assembled prompt's characters. Target ≤ 3,600 characters at this sta
 - Shorten Skills to use to skill names + one-line triggers only
 The Done when, How to verify, Constraints, and On each iteration sections must not be shortened — the evaluator needs them intact.
 
-Show the assembled prompt to the user with this message:
+Then build a **visual plan** — a Mermaid `flowchart TD` (in a ```mermaid fence) summarizing the run: Feature → each Done-when check → the verify/harness loop → files in scope. Keep it to ~10 nodes; it's a glance aid, not a restatement of the prompt. Mermaid renders natively in Obsidian, GitHub, and VS Code — no external tool, nothing written to disk.
 
-> Here's the goal condition I'll use. Review it — reply **go** to launch, or tell me what to change.
+Show the visual plan first, then the assembled prompt, with this message:
+
+> Here's the plan at a glance (diagram) and the exact goal condition below it. Review both — reply **go** to launch, or tell me what to change.
 
 ---
 
