@@ -1,31 +1,37 @@
-# loopsmith — Feature Implementation Orchestrator
+# agent-skills
 
-A Claude Code skill that turns a one-line feature request into an autonomous, verified implementation run. It gathers context, asks targeted questions, assembles a structured loop prompt, writes a failing test harness, then launches `/goal` to drive the work to green.
+A collection of [Claude Code](https://claude.com/claude-code) skills by [@danylo-dudok](https://github.com/danylo-dudok).
 
-## Install
+## Skills
 
-Copy the skill into your Claude Code skills directory:
+| Skill | What it does |
+|-------|--------------|
+| **[loopsmith](skills/loopsmith)** | Turns a one-line feature request into an autonomous, test-verified implementation run — asks the right questions, writes a failing test, drives `/goal` to green, reviews its own diff, and hands you a visual recap. |
 
-    cp -r skills/loopsmith ~/.claude/skills/
+## Install a skill
 
-Then invoke it in Claude Code:
+Each skill lives in `skills/<name>/`. Install one by copying its folder into your Claude Code skills directory:
 
-    /loopsmith add retry logic to the ingestion pipeline
+```bash
+git clone https://github.com/danylo-dudok/agent-skills.git
+cp -r agent-skills/skills/loopsmith ~/.claude/skills/
+```
 
-## How it works
+Then invoke it in Claude Code (e.g. `/loopsmith ...`). See each skill's own README for requirements and details.
 
-1. **Reads context** — your KB index (optional), available skills, and the working directory's stack and conventions.
-2. **Asks** — a single batch of targeted questions: what to build, done criteria, scope, forbidden operations.
-3. **Assembles** a loop prompt with hard safety limits — it never commits, pushes, publishes, or applies infrastructure.
-4. **Creates a failing test harness** and confirms it starts red.
-5. **Launches `/goal`** to iterate until the harness goes green, then writes a per-file change summary. All edits are left uncommitted for you to review.
+## Layout
 
-## Requirements
+```
+skills/
+└── <name>/
+    ├── SKILL.md     # the skill itself
+    └── README.md    # what it does, requirements, install
+```
 
-- **`/goal`** (Claude Code ≥ 2.1.139) — required to launch the autonomous loop. Without it, the skill prints the assembled prompt for you to paste manually.
-- **`/senior-architect`** (optional) — invoked for architectural review when a feature adds dependencies, storage, or modules. Safely skipped if not installed.
-- **KB index** (optional) — set your knowledge-base index path in the Configuration block at the top of `skills/loopsmith/SKILL.md`. Skipped if unset or not found.
+## Adding a skill
+
+Add `skills/<name>/SKILL.md` (plus a `README.md`), then add a row to the table above.
 
 ## License
 
-No license yet — add one if you want others to reuse it.
+No license yet — add one if you want others to reuse these skills.
