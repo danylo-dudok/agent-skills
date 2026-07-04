@@ -7,6 +7,7 @@ A collection of [Claude Code](https://claude.com/claude-code) skills by [@danylo
 | Skill | What it does |
 |-------|--------------|
 | **[loopsmith](skills/loopsmith)** | Turns a one-line feature request into an autonomous, test-verified implementation run — asks the right questions, writes a failing test, drives `/goal` to green, reviews its own diff, and hands you a visual recap. |
+| **[podcast](skills/podcast)** | Turns a file, URL, or topic into a NotebookLM-style two-host audio conversation and plays it aloud locally through [Voicebox](https://voicebox.sh) — no API keys, no upload. |
 
 ## Install a skill
 
