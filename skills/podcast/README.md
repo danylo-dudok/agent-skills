@@ -2,7 +2,7 @@
 
 > Point it at a file, URL, or topic. `podcast` writes a two-host conversation about it and plays it out loud in two voices — a local, terminal-native take on NotebookLM's Audio Overview.
 
-A Claude Code skill that turns any source into a short **two-host audio podcast** and plays it automatically. Claude writes the dialogue; [Voicebox](https://voicebox.sh) renders and speaks it locally through its MCP server — **no API keys, no upload, nothing leaves your machine**.
+A Claude Code skill that turns any source into a short **two-host audio podcast** and plays it automatically. Claude writes the dialogue; [Voicebox](https://voicebox.sh) renders it locally and each turn plays through `afplay` — **no API keys, no upload, nothing leaves your machine**.
 
 ## Why podcast
 
@@ -12,7 +12,7 @@ A Claude Code skill that turns any source into a short **two-host audio podcast*
 
 ## Requirements
 
-- **macOS** (Apple Silicon or Intel). Voicebox also ships Windows builds — the steps are identical apart from the installer and the optional `afplay` render path.
+- **macOS** with `python3` — playback uses `afplay` (swap for `aplay`/`paplay` on Linux; Voicebox itself is cross-platform).
 - **[Claude Code](https://claude.com/claude-code)** installed.
 
 Everything else — the Voicebox app, two voices, and the MCP link — is set up in the walkthrough below.
@@ -80,7 +80,7 @@ It reads the source, writes a ~2–4 minute two-host script, and plays it turn b
 
 1. **Reads the source** — a local file (Read), a URL (WebFetch), or a topic (from context).
 2. **Writes the whole script first** — the complete two-host dialogue in one pass (curious host asks, expert explains), printed up front so you see the full episode before any audio.
-3. **Then voices it** — hands the finished script to the Voicebox `speak` tool one turn at a time, with a distinct `profile` per host. Each turn plays automatically and is saved to Voicebox's History.
+3. **Then voices it** — for each turn, `scripts/say.sh` renders the audio via Voicebox (`POST /generate`, `engine=kokoro`), downloads the clip (`GET /audio/{id}`), and plays it with `afplay` (which blocks, so turns stay in order). The live `speak` tool isn't used — it's async, and overlapping turns collide.
 
 ## Configuration
 
@@ -92,8 +92,9 @@ Edit the **Configuration** block at the top of `SKILL.md` to match your Voicebox
 
 ## Notes & limits
 
-- **Playback is live, not a file.** `speak` plays through the speakers but doesn't save an `.mp3`. To keep episodes, Voicebox's REST API (`POST http://127.0.0.1:17493/generate`) renders each turn to a file to concatenate and `afplay` — the skill notes how, on request.
-- **Sequential turns** mean small gaps between lines versus NotebookLM's seamless mix. The file-render path above removes them.
+- **Render-to-file, not live playback.** Each turn renders to `/tmp/podcast_<id>.wav` and plays via `afplay` (which blocks → clean ordered playback, no overlap). No `ffmpeg` needed. Requires macOS + `python3`.
+- **Engine matters.** `/generate` defaults to the qwen engine; `say.sh` forces `engine=kokoro` for the Bella/Alloy presets (else HTTP 400). Set `VOICEBOX_ENGINE` for other voices.
+- **Keep one file (optional).** Clips are deleted after playing; skip the cleanup and `ffmpeg`-concat them for a single saveable episode. Small gaps between turns are render latency, not playback.
 
 ## License
 
