@@ -53,16 +53,15 @@ It reads the source, writes a ~2–4 minute two-host script, and plays it turn b
 ## How it works
 
 1. **Reads the source** — a local file (Read), a URL (WebFetch), or a topic (from context).
-2. **Writes the script** — a natural two-host dialogue: a curious host who asks, an expert who explains.
-3. **Speaks it** — calls the Voicebox `speak` MCP tool per turn, passing `profile` = host A or host B, so each voice is distinct. Voicebox plays each turn through the speakers automatically.
-4. **Prints the transcript** so you can follow along.
+2. **Writes the whole script first** — the complete two-host dialogue in one pass (curious host asks, expert explains), printed up front so you see the full episode before any audio.
+3. **Then voices it** — hands the finished script to the Voicebox `speak` tool one turn at a time, with a distinct `profile` per host. Each turn plays automatically and is saved to Voicebox's History.
 
 ## Configuration
 
 Edit the **Configuration** block at the top of `SKILL.md` to match your Voicebox profile names:
 
 ```
-> HOST_A = `Morgan` (asks) · HOST_B = `Scarlett` (explains)
+> HOST_A = `Bella` (asks) · HOST_B = `Alloy` (explains)
 ```
 
 ## Notes & limits
