@@ -12,33 +12,59 @@ A Claude Code skill that turns any source into a short **two-host audio podcast*
 
 ## Requirements
 
-- **[Claude Code](https://claude.com/claude-code)** — this is a Claude Code skill.
-- **[Voicebox](https://voicebox.sh)** installed and running, with its MCP server connected to Claude Code (below). Free, open-source, macOS/Windows.
-- **Two voice profiles** created in Voicebox (Voices tab — build them from the bundled presets, e.g. one male + one female Kokoro voice, or clone your own). The skill auto-detects them via `list_profiles`; optionally pin specific ones in the `SKILL.md` Configuration block.
+- **macOS** (Apple Silicon or Intel). Voicebox also ships Windows builds — the steps are identical apart from the installer and the optional `afplay` render path.
+- **[Claude Code](https://claude.com/claude-code)** installed.
 
-## Installation
+Everything else — the Voicebox app, two voices, and the MCP link — is set up in the walkthrough below.
+
+## Install from scratch
+
+**1. Install the Voicebox app** (the local voice engine).
+
+Download the latest DMG from the **[Voicebox releases page](https://github.com/jamiepine/voicebox/releases/latest)** — `Voicebox_<version>_aarch64.dmg` for Apple Silicon, `Voicebox_<version>_x64.dmg` for Intel — open it, and drag **Voicebox** into **Applications**. It's notarized, so it opens normally (no Gatekeeper override needed).
+
+<details>
+<summary>Or install from the terminal (Apple Silicon, needs <code>gh</code>)</summary>
 
 ```bash
-git clone https://github.com/danylo-dudok/agent-skills.git
-cp -r agent-skills/skills/podcast ~/.claude/skills/
+URL=$(gh api repos/jamiepine/voicebox/releases/latest \
+  --jq '.assets[] | select(.name|endswith("aarch64.dmg")) | .browser_download_url')
+curl -fL "$URL" -o /tmp/voicebox.dmg
+hdiutil attach /tmp/voicebox.dmg -nobrowse
+cp -R /Volumes/Voicebox/Voicebox.app /Applications/
+hdiutil detach /Volumes/Voicebox
 ```
+</details>
 
-Connect Voicebox's MCP server to Claude Code (with Voicebox running):
+**2. First launch.** Open Voicebox (`open -a Voicebox`) and let it finish downloading its TTS models on first run. Grant any audio permission it asks for.
+
+**3. Create two voice profiles.** In Voicebox, open the **Voices** tab and add two profiles from the bundled presets — e.g. **Bella** and **Alloy**, one per host. Two is the minimum; the skill auto-detects whatever you create.
+
+**4. Connect Voicebox to Claude Code** (MCP), with Voicebox running:
 
 ```bash
 claude mcp add --transport http voicebox http://127.0.0.1:17493/mcp \
   -H "X-Voicebox-Client-Id: claude-code" -s user
 ```
 
-Confirm both, then restart Claude Code:
+**5. Install this skill.**
 
 ```bash
-ls ~/.claude/skills/podcast/SKILL.md   # skill present
-claude mcp list | grep voicebox        # server connected (✔ when Voicebox is running)
+git clone https://github.com/danylo-dudok/agent-skills.git
+cp -r agent-skills/skills/podcast ~/.claude/skills/
 ```
 
+**6. Verify, then restart Claude Code.**
+
+```bash
+ls ~/.claude/skills/podcast/SKILL.md    # skill present
+claude mcp list | grep voicebox         # ✔ connected (Voicebox must be running)
+```
+
+Then run a podcast (see [Usage](#usage)).
+
 > **Update:** `git pull`, then re-run the `cp -r`.
-> **Uninstall:** `rm -rf ~/.claude/skills/podcast`.
+> **Uninstall:** `rm -rf ~/.claude/skills/podcast`; `claude mcp remove voicebox` to drop the server.
 
 ## Usage
 
