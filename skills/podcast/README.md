@@ -14,7 +14,7 @@ A Claude Code skill that turns any source into a short **two-host audio podcast*
 
 - **[Claude Code](https://claude.com/claude-code)** — this is a Claude Code skill.
 - **[Voicebox](https://voicebox.sh)** installed and running, with its MCP server connected to Claude Code (below). Free, open-source, macOS/Windows.
-- **Two voice profiles** in Voicebox (built-in presets or your own clones). Note their names and set them in the `SKILL.md` Configuration block (defaults: `Morgan`, `Scarlett`).
+- **Two voice profiles** created in Voicebox (Voices tab — build them from the bundled presets, e.g. one male + one female Kokoro voice, or clone your own). The skill auto-detects them via `list_profiles`; optionally pin specific ones in the `SKILL.md` Configuration block.
 
 ## Installation
 
